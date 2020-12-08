@@ -1,0 +1,16 @@
+# Android specific
+*.iml
+.gradle
+/local.properties
+/.idea/caches/build_file_checksums.ser
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/*
+/build
+/captures
+.externalNativeBuild
+
+# Mac OS generated
+.DS_Store
+.DS_Store?
