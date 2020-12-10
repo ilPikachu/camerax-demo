@@ -1,13 +1,11 @@
 package com.example.cameraxdemo
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
@@ -17,8 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.example.cameraxdemo.databinding.ActivityMainBinding
-import com.google.mlkit.vision.barcode.Barcode
-import com.google.mlkit.vision.text.Text
+import com.google.mlkit.vision.face.Face
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -42,8 +39,7 @@ class MainActivity : AppCompatActivity() {
     private var cameraProvider: ProcessCameraProvider? = null
     private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
 
-    private val barcodes = MutableLiveData<List<Barcode>>()
-    private val text = MutableLiveData<Text>()
+    private val faces = MutableLiveData<List<Face>>()
 
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
@@ -164,17 +160,18 @@ class MainActivity : AppCompatActivity() {
             .setTargetRotation(rotation)
             .build()
 
+        // Analyze
         val imageAnalyzer = ImageAnalysis.Builder()
             .setTargetAspectRatio(screenAspectRatio)
             .setTargetRotation(rotation)
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
             .also {
-                it.setAnalyzer(cameraExecutor, BarcodeAnalyzer(barcodes))
+                it.setAnalyzer(cameraExecutor, FaceAnalyzer(faces))
             }
 
-        barcodes.observe(this, Observer {
-            processBarcodeResult(it)
+        faces.observe(this, Observer {
+            processFaceResult(it)
         })
 
         // Select camera
@@ -197,31 +194,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /*
-    private fun processTextResult(text: Text) {
-        if (text.text.isNotEmpty()) {
-            binding.text.visibility = View.VISIBLE
-            binding.text.text = text.text
-        } else {
-            binding.text.visibility
+    private fun processFaceResult(faces: List<Face>) {
+        if (faces.isNotEmpty()) {
+            binding.overlay.clear()
+            inverseMirroredOverlay()
+            for (i in faces.indices) {
+                val face = faces[i]
+                val faceGraphic = FaceContourGraphic(binding.overlay)
+                binding.overlay.add(faceGraphic)
+                faceGraphic.updateFace(face)
+            }
         }
     }
-     */
 
-    private fun processBarcodeResult(barcodes: List<Barcode>) {
-        if (barcodes.isNotEmpty()) {
-            binding.qrButton.setOnClickListener {
-                startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(barcodes.first().rawValue)
-                    )
-                )
-            }
-            binding.qrButton.visibility = View.VISIBLE
-        }else {
-            binding.qrButton.setOnClickListener(null)
-            binding.qrButton.visibility = View.GONE
+    private fun inverseMirroredOverlay() {
+        if (lensFacing == CameraSelector.LENS_FACING_BACK) {
+            binding.overlay.scaleX = 1.0f
+        } else if (lensFacing == CameraSelector.LENS_FACING_FRONT) {
+            binding.overlay.scaleX = -1.0f
         }
     }
 

@@ -5,30 +5,30 @@ import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.lifecycle.MutableLiveData
-import com.google.mlkit.vision.barcode.Barcode
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions
-import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.face.Face
+import com.google.mlkit.vision.face.FaceDetection
+import com.google.mlkit.vision.face.FaceDetectorOptions
 
-class BarcodeAnalyzer(private val barcodes: MutableLiveData<List<Barcode>>) : ImageAnalysis.Analyzer {
+class FaceAnalyzer(private val faces: MutableLiveData<List<Face>>) : ImageAnalysis.Analyzer {
 
     @SuppressLint("UnsafeExperimentalUsageError")
     override fun analyze(imageProxy: ImageProxy) {
         val mediaImage = imageProxy.image
         if (mediaImage != null) {
             val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
-            val options = BarcodeScannerOptions.Builder()
-                .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
+            val options = FaceDetectorOptions.Builder()
+                .setContourMode(FaceDetectorOptions.CONTOUR_MODE_ALL)
                 .build()
-            val scanner = BarcodeScanning.getClient(options)
+            val detector = FaceDetection.getClient(options)
 
-            scanner.process(image)
+            detector.process(image)
                 .addOnSuccessListener {
-                    barcodes.postValue(it)
+                    faces.postValue(it)
                     imageProxy.close()
                 }
                 .addOnFailureListener {
-                    Log.e("BarcodeAnalyzer", "Detection failed", it)
+                    Log.e("FaceAnalyzer", "Detection failed", it)
                     imageProxy.close()
                 }
         }
