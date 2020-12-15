@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
+import android.webkit.URLUtil
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
@@ -18,7 +19,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.example.cameraxdemo.databinding.ActivityMainBinding
 import com.google.mlkit.vision.barcode.Barcode
-import com.google.mlkit.vision.text.Text
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
     private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
 
     private val barcodes = MutableLiveData<List<Barcode>>()
-    private val text = MutableLiveData<Text>()
 
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
@@ -197,26 +196,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /*
-    private fun processTextResult(text: Text) {
-        if (text.text.isNotEmpty()) {
-            binding.text.visibility = View.VISIBLE
-            binding.text.text = text.text
-        } else {
-            binding.text.visibility
-        }
-    }
-     */
-
     private fun processBarcodeResult(barcodes: List<Barcode>) {
         if (barcodes.isNotEmpty()) {
             binding.qrButton.setOnClickListener {
-                startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(barcodes.first().rawValue)
-                    )
-                )
+                val url = barcodes.first().displayValue
+                if (URLUtil.isValidUrl(url)) {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                } else {
+                    Toast.makeText(this, "Invalid URL", Toast.LENGTH_SHORT).show()
+                }
             }
             binding.qrButton.visibility = View.VISIBLE
         }else {
