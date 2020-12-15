@@ -174,6 +174,8 @@ class MainActivity : AppCompatActivity() {
             processFaceResult(it)
         })
 
+        inverseMirroredOverlay()
+
         // Select camera
         val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
 
@@ -197,7 +199,6 @@ class MainActivity : AppCompatActivity() {
     private fun processFaceResult(faces: List<Face>) {
         if (faces.isNotEmpty()) {
             binding.overlay.clear()
-            inverseMirroredOverlay()
             for (i in faces.indices) {
                 val face = faces[i]
                 val faceGraphic = FaceContourGraphic(binding.overlay)
@@ -211,6 +212,7 @@ class MainActivity : AppCompatActivity() {
         if (lensFacing == CameraSelector.LENS_FACING_BACK) {
             binding.overlay.scaleX = 1.0f
         } else if (lensFacing == CameraSelector.LENS_FACING_FRONT) {
+            // Invert only for front facing camera
             binding.overlay.scaleX = -1.0f
         }
     }

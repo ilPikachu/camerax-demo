@@ -31,6 +31,8 @@ import java.util.*
  *  1. [Graphic.translateX] and [Graphic.translateY] adjust the
  * coordinate from the preview's coordinate system to the view coordinate system.
  *
+ * Code from: https://codelabs.developers.google.com/codelabs/mlkit-android#0
+ *
  */
 class GraphicOverlay(
     context: Context?,

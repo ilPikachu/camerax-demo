@@ -34,22 +34,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <ImageButton
-        android:id="@+id/qr_button"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginEnd="32dp"
-        android:background="@null"
-        android:elevation="2dp"
-        android:padding="8dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_qr"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="@id/camera_capture_button"
-        app:layout_constraintBottom_toBottomOf="@id/camera_capture_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:visibility="visible" />
-
     <androidx.camera.view.PreviewView
         android:id="@+id/view_finder"
         android:layout_width="match_parent"

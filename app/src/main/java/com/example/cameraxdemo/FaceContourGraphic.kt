@@ -6,7 +6,11 @@ import android.graphics.Paint
 import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceLandmark
 
-/** Graphic instance for rendering face contours graphic overlay view.  */
+/**
+ * Graphic instance for rendering face contours graphic overlay view.
+ *
+ * Code from: https://codelabs.developers.google.com/codelabs/mlkit-android#0
+ */
 class FaceContourGraphic(overlay: GraphicOverlay) : GraphicOverlay.Graphic(overlay) {
     private val facePositionPaint: Paint
     private val idPaint: Paint
