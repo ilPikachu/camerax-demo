@@ -197,10 +197,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun processFaceResult(faces: List<Face>) {
+        binding.overlay.clear()
         if (faces.isNotEmpty()) {
-            binding.overlay.clear()
-            for (i in faces.indices) {
-                val face = faces[i]
+            faces.forEach { face ->
                 val faceGraphic = FaceContourGraphic(binding.overlay)
                 binding.overlay.add(faceGraphic)
                 faceGraphic.updateFace(face)
