@@ -63,6 +63,10 @@ class MainActivity : AppCompatActivity() {
         binding.cameraSwitchButton.setOnClickListener { switchLens() }
 
         outputDirectory = getOutputDirectory()
+
+        faces.observe(this, Observer {
+            processFaceResult(it)
+        })
     }
 
     override fun onRequestPermissionsResult(
@@ -169,10 +173,6 @@ class MainActivity : AppCompatActivity() {
             .also {
                 it.setAnalyzer(cameraExecutor, FaceAnalyzer(faces))
             }
-
-        faces.observe(this, Observer {
-            processFaceResult(it)
-        })
 
         inverseMirroredOverlay()
 
