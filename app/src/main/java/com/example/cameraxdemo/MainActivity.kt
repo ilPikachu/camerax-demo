@@ -65,6 +65,10 @@ class MainActivity : AppCompatActivity() {
         binding.cameraCaptureButton.setOnClickListener { takePhoto() }
         binding.cameraSwitchButton.setOnClickListener { switchLens() }
 
+        barcodes.observe(this, Observer {
+            processBarcodeResult(it)
+        })
+
         outputDirectory = getOutputDirectory()
     }
 
@@ -171,10 +175,6 @@ class MainActivity : AppCompatActivity() {
             .also {
                 it.setAnalyzer(cameraExecutor, BarcodeAnalyzer(barcodes))
             }
-
-        barcodes.observe(this, Observer {
-            processBarcodeResult(it)
-        })
 
         // Select camera
         val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
